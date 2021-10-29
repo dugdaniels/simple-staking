@@ -29,4 +29,8 @@ contract Stake {
         token.safeTransfer(msg.sender, _amount);
         stakes[msg.sender] -= _amount;
     }
+
+    function isFullyStaked(address _address) public view returns (bool) {
+        return stakes[_address] >= minStake;
+    }
 }

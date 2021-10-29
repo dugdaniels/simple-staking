@@ -27,16 +27,42 @@ describe("Stake contract", () => {
     expect(await stake.minStake()).to.equal(minStake);
   });
 
-  describe("Stake", () => {
+  describe("Staking", () => {
     it("should allow staking", async () => {
       await stake.stake(amount);
       expect(await stake.stakes(acct1.address)).to.equal(amount);
     });
 
+    it("should allow one to add to their stake", async () => {
+      await stake.stake(amount / 2);
+      await stake.stake(amount / 2);
+      expect(await stake.stakes(acct1.address)).to.equal(amount);
+    });
+  });
+
+  describe("Unstaking", () => {
     it("should allow unstaking", async () => {
       await stake.stake(amount);
       await stake.unstake(amount);
       expect(await stake.stakes(acct1.address)).to.equal(0);
+    });
+
+    it("should all someone to partially unstake", async () => {
+      await stake.stake(amount);
+      await stake.unstake(amount / 2);
+      expect(await stake.stakes(acct1.address)).to.equal(amount / 2);
+    });
+  });
+
+  describe("Verifing minimum stake", () => {
+    it("should verify if an account has staked the minimum amount", async () => {
+      await stake.stake(minStake);
+      expect(await stake.isFullyStaked(acct1.address)).to.equal(true);
+    });
+    
+    it("should verify if an account has not staked the minimum amount", async () => {
+      await stake.stake(minStake - 1);
+      expect(await stake.isFullyStaked(acct1.address)).to.equal(false);
     });
   });
 
