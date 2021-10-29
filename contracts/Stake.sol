@@ -1,11 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "hardhat/console.sol";
 
-contract Stake {
+contract Stake is Ownable {
 
     using SafeERC20 for IERC20;
 
@@ -32,5 +33,9 @@ contract Stake {
 
     function isFullyStaked(address _address) public view returns (bool) {
         return stakes[_address] >= minStake;
+    }
+
+    function setMinStake(uint _minStake) public onlyOwner {
+        minStake = _minStake;
     }
 }

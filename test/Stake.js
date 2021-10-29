@@ -66,4 +66,19 @@ describe("Stake contract", () => {
     });
   });
 
+  describe("Setting minimum stake amount", () => {
+    it("should set the minimum stake amount", async () => {
+      const newMinStake = 100;
+      await stake.setMinStake(newMinStake);
+      expect(await stake.minStake()).to.equal(newMinStake);
+    });
+
+    it("should not allow non-owners to set the minimum stake amount", async () => {
+      await expect(
+         stake.connect(acct2).setMinStake(minStake + 1)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
+      expect(await stake.minStake()).to.equal(minStake);
+    });
+  })
+
 });
